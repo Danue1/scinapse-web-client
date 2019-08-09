@@ -319,6 +319,24 @@
 }
 
 @media (max-width: $mobile-width) {
+  .headerLogoMark {
+    svg {
+      width: 32px;
+      height: 32px;
+      margin-right: 12px;
+    }
+  }
+
+  .navbar {
+    .headerContainer {
+      padding: 0 16px;
+    }
+  }
+
+  .searchInput {
+    padding: 0 44px 0 12px;
+  }
+  
   .rightBox {
     .externalCollectionButton {
       display: none;

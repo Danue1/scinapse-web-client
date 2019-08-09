@@ -81,3 +81,10 @@
   width: 69px;
   height: 69px;
 }
+
+// Mobile
+@media (max-width: $mobile-width) {
+  .noAuthorItemResultContainer {
+    margin: 0 16px;
+  }
+}

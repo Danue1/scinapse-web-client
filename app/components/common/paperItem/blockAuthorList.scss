@@ -83,3 +83,9 @@
   text-decoration: underline;
   margin-top: 4px;
 }
+
+@media (max-width: $mobile-width) {
+  .affiliation {
+    display: none;
+  }
+}
