@@ -75,7 +75,7 @@ const CollectionButton: React.SFC<CollectionButtonProps> = ({
     return (
       <>
         <button
-          className={styles.addCollectionBtnWrapper}
+          className={styles.removeCollectionBtnWrapper}
           onClick={() => {
             onRemove(paperId);
             ActionTicketManager.trackTicket({
@@ -87,8 +87,7 @@ const CollectionButton: React.SFC<CollectionButtonProps> = ({
             });
           }}
         >
-          <Icon className={styles.buttonIcon} icon="TRASH_CAN" />
-          <span>Remove from Collection</span>
+          <Icon className={styles.buttonIcon} icon="X_BUTTON" />
         </button>
         <div ref={newMemoAnchor}>
           <button
@@ -157,8 +156,8 @@ const CollectionButton: React.SFC<CollectionButtonProps> = ({
         }
       }}
     >
-      <Icon className={styles.plusIcon} icon="SMALL_PLUS" />
-      <span>Add To Collection</span>
+      <Icon className={styles.bookmarkIcon} icon="BOOKMARK" />
+      <span>Save to Collection</span>
     </button>
   );
 };

@@ -9,15 +9,28 @@
 }
 
 .addCollectionBtnWrapper {
-  @include small-action-button($gray800);
-  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 4px 8px 4px 4px;
+  border-radius: 4px;
+  color: white;
+  background-color: $main_blue0;
+  font-size: 14px;
+  height: 30px;
+  transition: background-color 200ms ease, color 200ms ease;
+  cursor: pointer;
 
-  .plusIcon {
+  &:hover {
+    background-color: $main_blue_light0;
+  }
+
+  .bookmarkIcon {
     @extend %button-icon;
+    color: white;
 
     svg {
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -34,6 +47,7 @@
 .addCollectionNoteBtnWrapper {
   @include small-action-button($gray800);
   height: 100%;
+  margin-right: 0px;
 
   .addNoteIcon {
     @extend %button-icon;
@@ -41,6 +55,29 @@
     svg {
       width: 20px;
       height: 20px;
+    }
+  }
+}
+
+.removeCollectionBtnWrapper {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+
+  .buttonIcon {
+    @extend %button-icon;
+    color: $gray600;
+
+    &:hover {
+      color: $gray500;
+    }
+
+    svg {
+      width: 12px;
+      height: 12px;
     }
   }
 }

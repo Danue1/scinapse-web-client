@@ -1,10 +1,13 @@
 .infoList {
-  margin-top: 12px;
+  margin-top: 10px;
   margin-bottom: 8px;
+  padding-top: 8px;
+  border-top: 1px solid $gray200;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   font-size: 13px;
-  height: 30px;
+  height: 41px;
 
   .citedButton {
     @include small-button($gray800);
@@ -85,9 +88,12 @@
   }
 }
 
+.leftBox {
+  display: flex;
+  align-items: center;
+}
+
 .rightBox {
-  position: absolute;
-  right: 0;
   display: flex;
   align-items: center;
 }
@@ -102,7 +108,7 @@
 }
 
 .citationIconWrapper {
-  @include small-action-button($gray800);
+  @include small-action-button($main_blue0);
   .citationIcon {
     margin-right: 4px;
     display: flex;

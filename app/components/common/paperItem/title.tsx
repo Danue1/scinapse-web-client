@@ -37,7 +37,7 @@ class Title extends React.PureComponent<TitleProps> {
       .replace(/#[A-Z0-9]+#/g, '');
 
     return (
-      <div>
+      <div className={styles.titleWrapper}>
         <Link
           to={`/papers/${paperId}`}
           onClick={() => {
