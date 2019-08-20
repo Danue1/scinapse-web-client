@@ -182,6 +182,16 @@ class CollectionAPI extends PlutoAxios {
     const camelizedRes = camelCaseKeys(res.data.data);
     return camelizedRes;
   }
+
+  public async addPaperToReadLater(paperId: number, note: string) {
+    const res = await this.post('/collections/read-later', {
+      paper_id: paperId,
+      note,
+    });
+    const camelizedRes = camelCaseKeys(res.data.data);
+    const normalizedData = normalize(camelizedRes, collectionSchema);
+    return normalizedData;
+  }
 }
 
 const collectionAPI = new CollectionAPI();
