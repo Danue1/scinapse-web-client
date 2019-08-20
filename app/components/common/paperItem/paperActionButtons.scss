@@ -234,11 +234,40 @@
     display: none;
   }
 
-  .addCollectionBtnWrapper {
+  .claimButton {
     display: none;
   }
 
-  .claimButton {
+  .infoList {
+    border: none;
+    height: 100%;
+
+    .citedButton {
+      height: 44px;
+      border-radius: 4px;
+      background-color: #f2f3f4;
+      font-size: 16px;
+      color: #1b2a36;
+    }
+
+    .sourceButton {
+      height: 44px;
+      border-radius: 4px;
+      border: none;
+      background-color: #f2f3f4;
+      font-size: 16px;
+      color: #1b2a36;
+
+      .faviconIcon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+@media (max-width: 320px) {
+  .sourceHostInfo {
     display: none;
   }
 }

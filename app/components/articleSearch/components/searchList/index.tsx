@@ -7,9 +7,11 @@ import PaperItem from '../../../common/paperItem/searchPaperItem';
 import ArticleSpinner from '../../../common/spinner/articleSpinner';
 import { RESEARCH_HISTORY_KEY, HistoryPaper } from '../../../researchHistory';
 import PaperAPI, { PaperSource } from '../../../../api/paper';
+import MobilePaperItem from '../../../common/mobilePaperItem';
 const styles = require('./searchList.scss');
 
 interface SearchListProps {
+  isMobile: boolean;
   currentUser: CurrentUser;
   papers: Paper[];
   searchQueryText: string;
@@ -17,7 +19,7 @@ interface SearchListProps {
 }
 
 const SearchList: React.FC<SearchListProps> = props => {
-  const { currentUser, papers, searchQueryText, isLoading } = props;
+  const { isMobile, currentUser, papers, searchQueryText, isLoading } = props;
   const historyPapers: HistoryPaper[] = store.get(RESEARCH_HISTORY_KEY) || [];
   const [sourceDomains, setSourceDomains] = React.useState<PaperSource[]>([]);
 
@@ -47,19 +49,35 @@ const SearchList: React.FC<SearchListProps> = props => {
       savedAt = matchedPaper.savedAt;
     }
 
-    return (
-      <PaperItem
-        key={paper.id}
-        paper={paper}
-        pageType="searchResult"
-        actionArea="searchResult"
-        searchQueryText={searchQueryText}
-        currentUser={currentUser}
-        wrapperClassName={styles.searchItemWrapper}
-        savedAt={savedAt}
-        sourceDomain={sourceDomains.find(source => source.paperId === paper.id)}
-      />
-    );
+    if (isMobile) {
+      return (
+        <MobilePaperItem
+          key={paper.id}
+          paper={paper}
+          pageType="searchResult"
+          actionArea="searchResult"
+          searchQueryText={searchQueryText}
+          currentUser={currentUser}
+          wrapperClassName={styles.searchItemWrapper}
+          savedAt={savedAt}
+          sourceDomain={sourceDomains.find(source => source.paperId === paper.id)}
+        />
+      );
+    } else {
+      return (
+        <PaperItem
+          key={paper.id}
+          paper={paper}
+          pageType="searchResult"
+          actionArea="searchResult"
+          searchQueryText={searchQueryText}
+          currentUser={currentUser}
+          wrapperClassName={styles.searchItemWrapper}
+          savedAt={savedAt}
+          sourceDomain={sourceDomains.find(source => source.paperId === paper.id)}
+        />
+      );
+    }
   });
 
   return <div className={styles.searchItems}>{searchItems}</div>;

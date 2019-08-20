@@ -88,8 +88,32 @@
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
 }
 
+.addCollectionBtnContext:after {
+  content: 'Save to Collection';
+}
+
 @media (max-width: $mobile_width) {
   .addCollectionBtnWrapper {
-    display: none;
+    height: 44px;
+    border-radius: 4px;
+    background-color: $main_blue1;
+    font-size: 16px;
+
+    .bookmarkIcon {
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  .addCollectionBtnContext:after {
+    content: 'Read Later';
+  }
+}
+
+@media (max-width: 375px) {
+  .addCollectionBtnContext:after {
+    content: 'Later';
   }
 }

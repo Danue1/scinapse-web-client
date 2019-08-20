@@ -34,8 +34,9 @@ interface DomainSourceBtnProps {
 
 const DomainSourceBtn: React.FC<DomainSourceBtnProps> = ({ source, onClick, currentUserDevice }) => {
   if (!source.source || !source.doi) return null;
+  const isMobile = currentUserDevice == UserDevice.MOBILE;
 
-  const buttonContext = currentUserDevice == UserDevice.MOBILE ? 'Source' : source.host;
+  const buttonContext = isMobile ? 'Source' : source.host;
 
   return (
     <a
@@ -51,7 +52,7 @@ const DomainSourceBtn: React.FC<DomainSourceBtnProps> = ({ source, onClick, curr
         alt={`${source.host} favicon`}
       />
       <span className={styles.sourceHostInfo}> {buttonContext}</span>
-      <Icon icon="SOURCE" className={styles.extSourceIcon} />
+      {!isMobile && <Icon icon="SOURCE" className={styles.extSourceIcon} />}
     </a>
   );
 };

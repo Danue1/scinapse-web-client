@@ -22,16 +22,19 @@ function mapStateToProps(state: AppState) {
   };
 }
 
-interface CollectionButtonProps {
+interface AddToCollectionBtnProps {
   paperId: number;
-  paperNote?: string;
+  myCollections: MyCollectionsState;
   pageType: Scinapse.ActionTicket.PageType;
+  actionArea?: Scinapse.ActionTicket.ActionArea;
+}
+
+interface CollectionButtonProps extends AddToCollectionBtnProps {
   hasCollection: boolean;
   currentUser: CurrentUser;
   collection: Collection | undefined;
-  actionArea?: Scinapse.ActionTicket.ActionArea;
+  paperNote?: string;
   onRemove?: (paperId: number) => Promise<void>;
-  myCollections: MyCollectionsState;
 }
 
 function handleAddToCollection(myCollections: MyCollectionsState, paperId: number) {
@@ -56,7 +59,32 @@ function trackActionToClickCollectionButton(
   });
 }
 
-const CollectionButton: React.SFC<CollectionButtonProps> = ({
+const AddToCollectionBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pageType, paperId, myCollections }) => {
+  return (
+    <button
+      className={styles.addCollectionBtnWrapper}
+      onClick={async () => {
+        const isBlocked = await blockUnverifiedUser({
+          authLevel: AUTH_LEVEL.VERIFIED,
+          actionArea: actionArea || pageType,
+          actionLabel: 'addToCollection',
+          userActionType: 'addToCollection',
+        });
+
+        trackActionToClickCollectionButton(paperId, pageType, actionArea || pageType);
+
+        if (!isBlocked) {
+          handleAddToCollection(myCollections, paperId);
+        }
+      }}
+    >
+      <Icon className={styles.bookmarkIcon} icon="BOOKMARK" />
+      <span className={styles.addCollectionBtnContext} />
+    </button>
+  );
+};
+
+const CollectionButton: React.FC<CollectionButtonProps> = ({
   paperId,
   pageType,
   paperNote,
@@ -139,26 +167,7 @@ const CollectionButton: React.SFC<CollectionButtonProps> = ({
   }
 
   return (
-    <button
-      className={styles.addCollectionBtnWrapper}
-      onClick={async () => {
-        const isBlocked = await blockUnverifiedUser({
-          authLevel: AUTH_LEVEL.VERIFIED,
-          actionArea: actionArea || pageType,
-          actionLabel: 'addToCollection',
-          userActionType: 'addToCollection',
-        });
-
-        trackActionToClickCollectionButton(paperId, pageType, actionArea || pageType);
-
-        if (!isBlocked) {
-          handleAddToCollection(myCollections, paperId);
-        }
-      }}
-    >
-      <Icon className={styles.bookmarkIcon} icon="BOOKMARK" />
-      <span>Save to Collection</span>
-    </button>
+    <AddToCollectionBtn paperId={paperId} pageType={pageType} actionArea={actionArea} myCollections={myCollections} />
   );
 };
 

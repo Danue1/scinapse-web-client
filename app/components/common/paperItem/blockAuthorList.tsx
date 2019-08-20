@@ -3,26 +3,12 @@ import { Link } from 'react-router-dom';
 import GlobalDialogManager from '../../../helpers/globalDialogManager';
 import ActionTicketManager from '../../../helpers/actionTicketManager';
 import { withStyles } from '../../../helpers/withStylesHelper';
-import { PaperAuthor } from '../../../model/author';
 import Icon from '../../../icons';
-import { Paper } from '../../../model/paper';
+import { AuthorItemProps, BlockAuthorListProps } from './types/venueAndAuthor';
 const styles = require('./blockAuthorList.scss');
 
 const MAXIMUM_PRE_AUTHOR_COUNT = 2;
 const MAXIMUM_POST_AUTHOR_COUNT = 1;
-
-interface BlockAuthorListProps {
-  paper: Paper;
-  authors: PaperAuthor[];
-  pageType: Scinapse.ActionTicket.PageType;
-  actionArea?: Scinapse.ActionTicket.ActionArea;
-}
-
-interface AuthorItemProps {
-  author: PaperAuthor;
-  pageType: Scinapse.ActionTicket.PageType;
-  actionArea?: Scinapse.ActionTicket.ActionArea;
-}
 
 const AuthorItem: React.FC<AuthorItemProps> = ({ author, pageType, actionArea }) => {
   let affiliation = null;

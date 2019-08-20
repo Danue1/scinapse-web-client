@@ -34,6 +34,7 @@ import ImprovedFooter from '../layouts/improvedFooter';
 import KnowledgeBaseNoti from '../recommendPapersDialog';
 import { getUserGroupName } from '../../helpers/abTestHelper';
 import { WEIGHTED_CITATION_EXPERIMENT, STRICT_SORT_EXPERIMENT } from '../../constants/abTestGlobalValue';
+import { UserDevice } from '../layouts/records';
 const styles = require('./articleSearch.scss');
 
 type Props = ReturnType<typeof mapStateToProps> &
@@ -174,6 +175,7 @@ const SearchResult: React.FC<Props & { queryParams: SearchPageQueryParams; filte
         </div>
         <FilterBox query={queryParams.query} />
         <SearchList
+          isMobile={layout.userDevice !== UserDevice.DESKTOP}
           currentUser={currentUserState}
           papers={articleSearchState.searchItemsToShow}
           isLoading={articleSearchState.isContentLoading}

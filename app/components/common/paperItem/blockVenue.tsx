@@ -2,21 +2,12 @@ import * as React from 'react';
 import * as format from 'date-fns/format';
 import { Link } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
-import { ConferenceInstance } from '../../../model/conferenceInstance';
 import ActionTicketManager from '../../../helpers/actionTicketManager';
-import { Journal } from '../../../model/journal';
 import Icon from '../../../icons';
 import { withStyles } from '../../../helpers/withStylesHelper';
 import JournalBadge from '../../journalBadge';
+import { BlockVenueProps } from './types/venueAndAuthor';
 const styles = require('./blockVenue.scss');
-
-interface BlockVenueProps {
-  journal: Journal | null;
-  conferenceInstance: ConferenceInstance | null;
-  publishedDate: string | null;
-  pageType: Scinapse.ActionTicket.PageType;
-  actionArea?: Scinapse.ActionTicket.ActionArea;
-}
 
 const BlockVenue: React.FC<BlockVenueProps> = ({
   journal,
