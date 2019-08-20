@@ -1,5 +1,5 @@
 export interface SavedInCollections {
   id: number;
   title: string;
-  readLater: boolean;
+  readLater?: boolean;
 }
