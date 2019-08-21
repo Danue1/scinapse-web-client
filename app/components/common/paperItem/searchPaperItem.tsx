@@ -49,7 +49,17 @@ const NotIncludedWords: React.FC<{ missingKeywords: string[] }> = React.memo(pro
 });
 
 const PaperItem: React.FC<PaperItemProps> = React.memo(props => {
-  const { searchQueryText, paper, wrapperClassName, currentUser, pageType, actionArea, savedAt, sourceDomain } = props;
+  const {
+    searchQueryText,
+    paper,
+    wrapperClassName,
+    currentUser,
+    pageType,
+    actionArea,
+    savedAt,
+    sourceDomain,
+    isMobile,
+  } = props;
   const { doi, urls, relation } = paper;
 
   let historyContent = null;
@@ -73,10 +83,10 @@ const PaperItem: React.FC<PaperItemProps> = React.memo(props => {
   return (
     <div className={`${wrapperClassName ? wrapperClassName : styles.paperItemWrapper}`}>
       <div className={styles.contentSection}>
-        {!!relation && relation.savedInCollections.length >= 1 ? (
+        {!!relation && relation.savedInCollections.length >= 1 && !isMobile ? (
           <SavedCollections collections={relation.savedInCollections} />
         ) : null}
-        {historyContent}
+        {!isMobile && historyContent}
         <Title
           paperId={paper.id}
           paperTitle={paper.title}
@@ -101,6 +111,7 @@ const PaperItem: React.FC<PaperItemProps> = React.memo(props => {
             actionArea={actionArea}
             abstract={paper.abstractHighlighted || paper.abstract}
             searchQueryText={searchQueryText}
+            maxLength={isMobile ? 250 : undefined}
           />
         </div>
         <Figures figures={paper.figures} paperId={paper.id} />
