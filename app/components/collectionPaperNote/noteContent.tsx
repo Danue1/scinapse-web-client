@@ -14,6 +14,7 @@ const NoteContent: React.SFC<NoteContentProps> = props => {
   return (
     <div className={styles.note}>
       <div style={{ maxHeight: props.maxHeight }} className={styles.memoItem}>
+        <Icon className={styles.noteIcon} icon="NOTED" />
         {props.note}
       </div>
       <div className={styles.noteButtonWrapper}>

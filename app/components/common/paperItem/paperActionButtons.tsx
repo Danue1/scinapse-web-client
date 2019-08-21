@@ -22,6 +22,10 @@ import { addPaperToReadLater, removePaperToReadLater } from '../../articleSearch
 import { checkAuthStatus } from '../../auth/actions';
 import { LayoutState } from '../../layouts/reducer';
 import { UserDevice } from '../../layouts/reducer';
+import CollectionPaperNote from '../../collectionPaperNote';
+import { denormalize } from 'normalizr';
+import { collectionSchema, Collection } from '../../../model/collection';
+import { SavedInCollections } from '../../../model/savedInCollecctions';
 const styles = require('./paperActionButtons.scss');
 
 interface HandleClickClaim {
@@ -75,6 +79,7 @@ export interface PaperActionButtonsProps {
   onRemovePaperCollection?: (paperId: number) => Promise<void>;
   sourceDomain?: PaperSource;
   layout: LayoutState;
+  collection: Collection | undefined;
 }
 
 export interface PaperActionButtonsState
@@ -94,28 +99,54 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
   }
 
   public render() {
-    const { paper, pageType, paperNote, actionArea, hasCollection, onRemovePaperCollection, layout } = this.props;
+    const {
+      paper,
+      pageType,
+      paperNote,
+      actionArea,
+      hasCollection,
+      onRemovePaperCollection,
+      layout,
+      collection,
+      currentUser,
+    } = this.props;
+    const itsMine = collection && collection.createdBy.id === currentUser.id ? true : false;
+
+    const isMobile = layout.userDevice === UserDevice.MOBILE;
 
     return (
-      <div className={styles.infoList}>
-        <div className={styles.leftBox}>
-          {this.getCitedButton()}
-          {this.getSourceButton()}
-          {this.getMoreButton()}
+      <div>
+        <div className={styles.infoList}>
+          <div className={styles.leftBox}>
+            {this.getCitedButton()}
+            {this.getSourceButton()}
+            {this.getMoreButton()}
+          </div>
+          <div className={styles.rightBox}>
+            {this.getCitationQuoteButton()}
+            <CollectionButton
+              hasCollection={hasCollection}
+              paper={paper}
+              paperNote={paperNote}
+              pageType={pageType}
+              actionArea={actionArea}
+              onRemove={!!onRemovePaperCollection ? onRemovePaperCollection : this.handleRemovePaperToReadLater}
+              handleAddToReadLater={this.handleAddPaperToReadLater}
+              isMobile={isMobile}
+            />
+          </div>
         </div>
-        <div className={styles.rightBox}>
-          {this.getCitationQuoteButton()}
-          <CollectionButton
-            hasCollection={hasCollection}
-            paper={paper}
-            paperNote={paperNote}
-            pageType={pageType}
-            actionArea={actionArea}
-            onRemove={!!onRemovePaperCollection ? onRemovePaperCollection : this.handleRemovePaperToReadLater}
-            handleAddToReadLater={this.handleAddPaperToReadLater}
-            isMobile={layout.userDevice === UserDevice.MOBILE}
-          />
-        </div>
+        {isMobile &&
+          itsMine &&
+          hasCollection && (
+            <CollectionPaperNote
+              maxHeight={60}
+              note={paperNote}
+              collectionId={collection!.id}
+              paperId={paper.id}
+              isMine={!!itsMine}
+            />
+          )}
       </div>
     );
   }
@@ -147,7 +178,7 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
     const buttonContent = (
       <>
         <Icon className={styles.sourceButtonIcon} icon="EXTERNAL_SOURCE" />
-        <span>Source</span>
+        <span className={styles.sourceHostInfo}>Source</span>
       </>
     );
 
@@ -357,7 +388,7 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
     const { dispatch, paper } = this.props;
     if (!paper.relation || paper.relation.savedInCollections.length === 0) return;
 
-    let targetCollection = null;
+    let targetCollection: SavedInCollections | undefined;
 
     paper.relation.savedInCollections.map(collection => {
       if (collection.readLater) targetCollection = collection;
@@ -378,9 +409,9 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
     let removeConfirm;
 
     if (param.length >= 2) {
-      removeConfirm = confirm(`Are you sure to remove ${param.length} paper from '${targetCollection.title}'?`);
+      removeConfirm = confirm(`Are you sure to remove ${param.length} paper from '${targetCollection!.title}'?`);
     } else {
-      removeConfirm = confirm(`Are you sure to remove this paper from '${targetCollection.title}'?`);
+      removeConfirm = confirm(`Are you sure to remove this paper from '${targetCollection!.title}'?`);
     }
 
     if (targetCollection && removeConfirm) {
@@ -394,6 +425,7 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
 const mapStateToProps = (state: AppState) => {
   return {
     layout: state.layout,
+    collection: denormalize(state.collectionShow.mainCollectionId, collectionSchema, state.entities),
   };
 };
 

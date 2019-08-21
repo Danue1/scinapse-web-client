@@ -201,6 +201,18 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
     [paper.relation]
   );
 
+  if (hasCollection && onRemove && itsMine && collection && isMobile) {
+    return (
+      <RemoveToReadLaterBtn
+        paperId={paper.id}
+        pageType={pageType}
+        actionArea={actionArea}
+        collectionId={myCollections.collectionIds[0]}
+        onRemove={onRemove}
+      />
+    );
+  }
+
   if (hasCollection && onRemove && itsMine && collection) {
     return (
       <>

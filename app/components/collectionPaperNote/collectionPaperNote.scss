@@ -84,3 +84,37 @@
     color: $gray400;
   }
 }
+
+.noteIcon {
+  display: none;
+}
+
+@media (max-width: $mobile_width) {
+  .note {
+    width: 100%;
+    position: relative;
+
+    .memoItem {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      font-size: 16px;
+    }
+  }
+
+  .noteIcon {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .memoForm {
+    width: 100%;
+  }
+}
