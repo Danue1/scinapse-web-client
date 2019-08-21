@@ -116,7 +116,7 @@ export function reducer(state: EntityState = INITIAL_ENTITY_STATE, action: Actio
       return { ...state };
     }
 
-    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER: {
+    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_REMOVE_PAPER_FROM_READ_LATER: {
       const removedSavedInCollection = action.payload.collection;
       const targetPaperId = action.payload.paperId;
       if (state.papers[targetPaperId]) {

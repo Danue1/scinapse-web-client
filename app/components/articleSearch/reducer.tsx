@@ -79,7 +79,7 @@ export function reducer(
       return { ...state, isContentLoading: false };
     }
 
-    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER: {
+    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_REMOVE_PAPER_FROM_READ_LATER: {
       const targetCollection = action.payload.collection;
       const targetPaperId = action.payload.paperId;
 

@@ -226,9 +226,9 @@ export enum ACTION_TYPES {
   PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER = 'PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER',
   PAPER_ITEM_FAIL_TO_ADD_PAPER_TO_READ_LATER = 'PAPER_ITEM_FAIL_TO_ADD_PAPER_TO_READ_LATER',
 
-  PAPER_ITEM_START_TO_DELETE_PAPER_TO_READ_LATER = 'PAPER_ITEM_START_TO_DELETE_PAPER_TO_READ_LATER',
-  PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER = 'PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER',
-  PAPER_ITEM_FAIL_TO_DELETE_PAPER_TO_READ_LATER = 'PAPER_ITEM_FAIL_TO_DELETE_PAPER_TO_READ_LATER',
+  PAPER_ITEM_START_TO_REMOVE_PAPER_FROM_READ_LATER = 'PAPER_ITEM_START_TO_REMOVE_PAPER_FROM_READ_LATER',
+  PAPER_ITEM_SUCCEED_TO_REMOVE_PAPER_FROM_READ_LATER = 'PAPER_ITEM_SUCCEED_TO_REMOVE_PAPER_FROM_READ_LATER',
+  PAPER_ITEM_FAIL_TO_REMOVE_PAPER_FROM_READ_LATER = 'PAPER_ITEM_FAIL_TO_REMOVE_PAPER_FROM_READ_LATER',
 }
 
 export function createAction<T extends { type: ACTION_TYPES }>(d: T): T {
@@ -1065,20 +1065,20 @@ export const ActionCreators = {
     return createAction({ type: ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER, payload });
   },
 
-  failToAddPaperTOReadLater() {
+  failToAddPaperToReadLater() {
     return createAction({ type: ACTION_TYPES.PAPER_ITEM_FAIL_TO_ADD_PAPER_TO_READ_LATER });
   },
 
-  startToDeletePaperToReadLater() {
-    return createAction({ type: ACTION_TYPES.PAPER_ITEM_START_TO_DELETE_PAPER_TO_READ_LATER });
+  startToRemovePaperFromReadLater() {
+    return createAction({ type: ACTION_TYPES.PAPER_ITEM_START_TO_REMOVE_PAPER_FROM_READ_LATER });
   },
 
-  succeedToDeletePaperToReadLater(payload: { collection: SavedInCollections; paperId: number }) {
-    return createAction({ type: ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER, payload });
+  succeedToRemovePaperFromReadLater(payload: { collection: SavedInCollections; paperId: number }) {
+    return createAction({ type: ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_REMOVE_PAPER_FROM_READ_LATER, payload });
   },
 
-  failToDeletePaperTOReadLater() {
-    return createAction({ type: ACTION_TYPES.PAPER_ITEM_FAIL_TO_DELETE_PAPER_TO_READ_LATER });
+  failToRemovePaperFromReadLater() {
+    return createAction({ type: ACTION_TYPES.PAPER_ITEM_FAIL_TO_REMOVE_PAPER_FROM_READ_LATER });
   },
 
   addEntity(payload: { entities: { [K in keyof AppEntities]?: AppEntities[K] }; result: number | number[] }) {

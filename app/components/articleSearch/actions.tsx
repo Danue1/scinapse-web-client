@@ -134,10 +134,10 @@ export function addPaperToReadLater(paperId: number, note: string) {
 export function removePaperToReadLater(params: RemovePapersFromCollectionParams) {
   return async (dispatch: Dispatch<any>) => {
     try {
-      dispatch(ActionCreators.startToDeletePaperToReadLater());
+      dispatch(ActionCreators.startToRemovePaperFromReadLater());
       await CollectionAPI.removePapersFromCollection(params);
       dispatch(
-        ActionCreators.succeedToDeletePaperToReadLater({
+        ActionCreators.succeedToRemovePaperFromReadLater({
           collection: params.collection as SavedInCollections,
           paperId: params.paperIds[0],
         })
