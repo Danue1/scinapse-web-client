@@ -62,6 +62,10 @@
 .deleteReadLaterBtnWrapper {
   @extend .addCollectionBtnWrapper;
   background-color: $black1;
+
+  &:hover {
+    background-color: $gray800;
+  }
 }
 
 .deleteReadLaterBtnContext:after {

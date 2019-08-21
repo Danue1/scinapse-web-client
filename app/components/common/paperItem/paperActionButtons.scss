@@ -20,7 +20,7 @@
 }
 
 .sourceButton {
-  @include small-action-button($gray800);
+  @include small-button($gray800);
   position: relative;
   overflow: hidden;
 
