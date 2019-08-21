@@ -7,7 +7,6 @@ import PaperItem from '../../../common/paperItem/searchPaperItem';
 import ArticleSpinner from '../../../common/spinner/articleSpinner';
 import { RESEARCH_HISTORY_KEY, HistoryPaper } from '../../../researchHistory';
 import PaperAPI, { PaperSource } from '../../../../api/paper';
-import MobilePaperItem from '../../../common/mobilePaperItem';
 const styles = require('./searchList.scss');
 
 interface SearchListProps {
@@ -59,6 +58,7 @@ const SearchList: React.FC<SearchListProps> = props => {
         currentUser={currentUser}
         wrapperClassName={styles.searchItemWrapper}
         savedAt={savedAt}
+        isMobile={isMobile}
         sourceDomain={sourceDomains.find(source => source.paperId === paper.id)}
       />
     );

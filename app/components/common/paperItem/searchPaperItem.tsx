@@ -22,6 +22,7 @@ export interface PaperItemProps {
   searchQueryText: string;
   wrapperClassName: string;
   currentUser: CurrentUser;
+  isMobile: boolean;
   sourceDomain?: PaperSource;
 }
 
