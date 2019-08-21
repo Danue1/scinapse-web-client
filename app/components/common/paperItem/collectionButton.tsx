@@ -20,6 +20,8 @@ import {
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Popper from '@material-ui/core/Popper';
 import { Link } from 'react-router-dom';
+import { getUserGroupName } from '../../../helpers/abTestHelper';
+import { READ_LATER_EXPERIMENT } from '../../../constants/abTestGlobalValue';
 const styles = require('./collectionButton.scss');
 
 function mapStateToProps(state: AppState) {
@@ -52,13 +54,7 @@ function trackActionToClickCollectionButton(
   });
 }
 
-const RemoveToReadLaterBtn: React.FC<RemoveToReadLaterBtnProps> = ({
-  paperId,
-  pageType,
-  actionArea,
-  onRemove,
-  collectionId,
-}) => {
+const RemoveToReadLaterBtn: React.FC<RemoveToReadLaterBtnProps> = ({ paperId, onRemove, collectionId }) => {
   const dropdownMenuEl = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -127,8 +123,8 @@ const AddToReadLaterBtn: React.FC<AddToReadLaterBtnProps> = ({
         const isBlocked = await blockUnverifiedUser({
           authLevel: AUTH_LEVEL.VERIFIED,
           actionArea: actionArea || pageType,
-          actionLabel: 'addToCollection',
-          userActionType: 'addToCollection',
+          actionLabel: 'addToReadLater',
+          userActionType: 'addToReadLater',
         });
 
         trackActionToClickCollectionButton(paperId, pageType, actionArea || pageType);
@@ -176,23 +172,34 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
   actionArea,
   hasCollection,
   onRemove,
-  handleAddToreadLater,
+  handleAddToReadLater,
   myCollections,
   currentUser,
   collection,
+  isMobile,
 }) => {
-  let alreadySaved;
-  if (!!paper.relation && paper.relation.savedInCollections.length > 0) {
-    paper.relation.savedInCollections.map(collection => {
-      if (collection.readLater) {
-        alreadySaved = true;
-      }
-    });
-  }
-
   const itsMine = collection && collection.createdBy.id === currentUser.id ? true : false;
   const newMemoAnchor = React.useRef<HTMLDivElement | null>(null);
   const [isOpenNotePopover, setIsOpenNotePopover] = React.useState(false);
+  const [showReadLaterBtn, setShowReadLaterBtn] = React.useState(false);
+  const [isSaved, setIsSaved] = React.useState(false);
+
+  React.useEffect(() => {
+    setShowReadLaterBtn(getUserGroupName(READ_LATER_EXPERIMENT) === 'rl');
+  }, []);
+
+  React.useEffect(
+    () => {
+      if (!!paper.relation && paper.relation.savedInCollections.length > 0) {
+        paper.relation.savedInCollections.map(collection => {
+          if (collection.readLater) {
+            setIsSaved(true);
+          }
+        });
+      }
+    },
+    [paper.relation]
+  );
 
   if (hasCollection && onRemove && itsMine && collection) {
     return (
@@ -261,7 +268,18 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
     );
   }
 
-  return alreadySaved ? (
+  if (!showReadLaterBtn && !isMobile) {
+    return (
+      <AddToCollectionBtn
+        paperId={paper.id}
+        pageType={pageType}
+        actionArea={actionArea}
+        myCollections={myCollections}
+      />
+    );
+  }
+
+  return isSaved ? (
     <RemoveToReadLaterBtn
       paperId={paper.id}
       pageType={pageType}
@@ -274,7 +292,7 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
       paperId={paper.id}
       pageType={pageType}
       actionArea={actionArea}
-      handleAddToReadLater={handleAddToreadLater}
+      handleAddToReadLater={handleAddToReadLater}
     />
   );
 };

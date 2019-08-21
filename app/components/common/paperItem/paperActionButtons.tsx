@@ -18,9 +18,10 @@ import formatNumber from '../../../helpers/formatNumber';
 import { addPaperToRecommendation } from '../../../actions/recommendation';
 import { PaperSource } from '../../../api/paper';
 import { AppState } from '../../../reducers';
-import { LayoutState, UserDevice } from '../../layouts/records';
 import { addPaperToReadLater, removePaperToReadLater } from '../../articleSearch/actions';
 import { checkAuthStatus } from '../../auth/actions';
+import { LayoutState } from '../../layouts/reducer';
+import { UserDevice } from '../../layouts/reducer';
 const styles = require('./paperActionButtons.scss');
 
 interface HandleClickClaim {
@@ -93,7 +94,7 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
   }
 
   public render() {
-    const { paper, pageType, paperNote, actionArea, hasCollection, onRemovePaperCollection } = this.props;
+    const { paper, pageType, paperNote, actionArea, hasCollection, onRemovePaperCollection, layout } = this.props;
 
     return (
       <div className={styles.infoList}>
@@ -111,7 +112,8 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
             pageType={pageType}
             actionArea={actionArea}
             onRemove={!!onRemovePaperCollection ? onRemovePaperCollection : this.handleRemovePaperToReadLater}
-            handleAddToreadLater={this.handleAddPaperToReadLater}
+            handleAddToReadLater={this.handleAddPaperToReadLater}
+            isMobile={layout.userDevice === UserDevice.MOBILE}
           />
         </div>
       </div>

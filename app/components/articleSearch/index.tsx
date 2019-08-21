@@ -34,7 +34,7 @@ import ImprovedFooter from '../layouts/improvedFooter';
 import KnowledgeBaseNoti from '../recommendPapersDialog';
 import { getUserGroupName } from '../../helpers/abTestHelper';
 import { WEIGHTED_CITATION_EXPERIMENT, STRICT_SORT_EXPERIMENT } from '../../constants/abTestGlobalValue';
-import { UserDevice } from '../layouts/records';
+import { UserDevice } from '../layouts/reducer';
 const styles = require('./articleSearch.scss');
 
 type Props = ReturnType<typeof mapStateToProps> &

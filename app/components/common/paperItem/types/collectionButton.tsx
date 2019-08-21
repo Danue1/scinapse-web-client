@@ -11,9 +11,10 @@ export interface CollectionButtonProps {
   hasCollection: boolean;
   currentUser: CurrentUser;
   collection: Collection | undefined;
+  isMobile: boolean;
   paperNote?: string;
   onRemove?: (paperId: number) => Promise<void>;
-  handleAddToreadLater?: (paperId: number) => void;
+  handleAddToReadLater?: (paperId: number) => void;
 }
 
 export interface AddToCollectionBtnProps {
