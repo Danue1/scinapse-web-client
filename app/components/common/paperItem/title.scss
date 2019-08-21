@@ -45,8 +45,15 @@
 
 // Mobile
 @media (max-width: $mobile_width) {
+  .titleWrapper {
+    width: 100%;
+  }
+
   .title {
     width: 100%;
     line-height: 1.35;
+    font-size: 18px;
+    font-weight: 500;
+    color: #133f7a;
   }
 }

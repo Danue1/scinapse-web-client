@@ -49,35 +49,19 @@ const SearchList: React.FC<SearchListProps> = props => {
       savedAt = matchedPaper.savedAt;
     }
 
-    if (isMobile) {
-      return (
-        <MobilePaperItem
-          key={paper.id}
-          paper={paper}
-          pageType="searchResult"
-          actionArea="searchResult"
-          searchQueryText={searchQueryText}
-          currentUser={currentUser}
-          wrapperClassName={styles.searchItemWrapper}
-          savedAt={savedAt}
-          sourceDomain={sourceDomains.find(source => source.paperId === paper.id)}
-        />
-      );
-    } else {
-      return (
-        <PaperItem
-          key={paper.id}
-          paper={paper}
-          pageType="searchResult"
-          actionArea="searchResult"
-          searchQueryText={searchQueryText}
-          currentUser={currentUser}
-          wrapperClassName={styles.searchItemWrapper}
-          savedAt={savedAt}
-          sourceDomain={sourceDomains.find(source => source.paperId === paper.id)}
-        />
-      );
-    }
+    return (
+      <PaperItem
+        key={paper.id}
+        paper={paper}
+        pageType="searchResult"
+        actionArea="searchResult"
+        searchQueryText={searchQueryText}
+        currentUser={currentUser}
+        wrapperClassName={styles.searchItemWrapper}
+        savedAt={savedAt}
+        sourceDomain={sourceDomains.find(source => source.paperId === paper.id)}
+      />
+    );
   });
 
   return <div className={styles.searchItems}>{searchItems}</div>;
