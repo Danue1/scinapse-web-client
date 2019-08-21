@@ -188,7 +188,7 @@ class CollectionAPI extends PlutoAxios {
       paper_id: paperId,
       note,
     });
-    const camelizedRes = camelCaseKeys(res.data.data);
+    const camelizedRes = camelCaseKeys(res.data.data.content);
     const normalizedData = normalize(camelizedRes, collectionSchema);
     return normalizedData;
   }

@@ -54,6 +54,20 @@ export function reducer(
       };
     }
 
+    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER: {
+      const targetCollectionId = action.payload.collection.id;
+      const index = state.collectionIds.indexOf(targetCollectionId);
+
+      if (index === -1) {
+        return {
+          ...state,
+          collectionIds: [targetCollectionId, ...state.collectionIds],
+        };
+      }
+
+      return { ...state };
+    }
+
     case ACTION_TYPES.GLOBAL_DIALOG_SUCCEEDED_POST_COLLECTION: {
       return {
         ...state,

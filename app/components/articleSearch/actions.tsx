@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import axios from 'axios';
-import { ACTION_TYPES } from '../../actions/actionTypes';
+import { ACTION_TYPES, ActionCreators } from '../../actions/actionTypes';
 import { SearchPapersParams } from '../../api/types/paper';
 import PapersQueryFormatter from '../../helpers/searchQueryManager';
 import ActionTicketManager from '../../helpers/actionTicketManager';
@@ -8,6 +8,7 @@ import SearchAPI from '../../api/search';
 import PlutoAxios from '../../api/pluto';
 import { CommonError } from '../../model/error';
 import { GetAuthorsParam } from '../../api/types/author';
+import CollectionAPI from '../../api/collection';
 
 export function changeSearchInput(searchInput: string) {
   return {
@@ -105,6 +106,26 @@ export function fetchSearchAuthors(params: GetAuthorsParam) {
         });
         throw err;
       }
+    }
+  };
+}
+
+export function addPaperToReadLater(paperId: number, note: string) {
+  return async (dispatch: Dispatch<any>) => {
+    try {
+      dispatch(ActionCreators.startToAddPaperToReadLater());
+
+      const res = await CollectionAPI.addPaperToReadLater(paperId, note);
+      dispatch(ActionCreators.addEntity(res));
+      dispatch(
+        ActionCreators.succeedToAddPaperToReadLater({
+          collection: res.entities.collections[res.result],
+          paperId,
+        })
+      );
+    } catch (err) {
+      const error = PlutoAxios.getGlobalError(err);
+      throw error;
     }
   };
 }

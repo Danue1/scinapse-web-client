@@ -12,6 +12,9 @@ import { Collection, collectionSchema } from '../../../model/collection';
 import { MyCollectionsState } from '../../../containers/paperShowCollectionControlButton/reducer';
 import CollectionPaperNote from '../../collectionPaperNote';
 import { blockUnverifiedUser, AUTH_LEVEL } from '../../../helpers/checkAuthDialog';
+import { addPaperToReadLater } from '../../articleSearch/actions';
+import { Dispatch } from 'redux';
+import { Paper } from '../../../model/paper';
 const styles = require('./collectionButton.scss');
 
 function mapStateToProps(state: AppState) {
@@ -23,10 +26,11 @@ function mapStateToProps(state: AppState) {
 }
 
 interface AddToCollectionBtnProps {
-  paperId: number;
+  paper: Paper;
   myCollections: MyCollectionsState;
   pageType: Scinapse.ActionTicket.PageType;
   actionArea?: Scinapse.ActionTicket.ActionArea;
+  dispatch: Dispatch<any>;
 }
 
 interface CollectionButtonProps extends AddToCollectionBtnProps {
@@ -59,7 +63,25 @@ function trackActionToClickCollectionButton(
   });
 }
 
-const AddToCollectionBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pageType, paperId, myCollections }) => {
+const AddToReadLaterBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pageType, paper, dispatch }) => {
+  let alreadySaved;
+  if (!!paper.relation && paper.relation.savedInCollections.length > 0) {
+    paper.relation.savedInCollections.map(test => {
+      if (test.readLater) {
+        alreadySaved = true;
+      }
+    });
+  }
+
+  if (alreadySaved) {
+    return (
+      <button className={styles.deleteReadLaterBtnWrapper} onClick={async () => {}}>
+        <Icon className={styles.bookmarkIcon} icon="BOOKMARK" />
+        <span className={styles.deleteReadLaterBtnContext} />
+      </button>
+    );
+  }
+
   return (
     <button
       className={styles.addCollectionBtnWrapper}
@@ -71,10 +93,35 @@ const AddToCollectionBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pag
           userActionType: 'addToCollection',
         });
 
-        trackActionToClickCollectionButton(paperId, pageType, actionArea || pageType);
+        trackActionToClickCollectionButton(paper.id, pageType, actionArea || pageType);
 
         if (!isBlocked) {
-          handleAddToCollection(myCollections, paperId);
+          dispatch(addPaperToReadLater(paper.id, ''));
+        }
+      }}
+    >
+      <Icon className={styles.bookmarkIcon} icon="BOOKMARK" />
+      <span className={styles.addReadLaterBtnContext} />
+    </button>
+  );
+};
+
+const AddToCollectionBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pageType, paper, myCollections }) => {
+  return (
+    <button
+      className={styles.addCollectionBtnWrapper}
+      onClick={async () => {
+        const isBlocked = await blockUnverifiedUser({
+          authLevel: AUTH_LEVEL.VERIFIED,
+          actionArea: actionArea || pageType,
+          actionLabel: 'addToCollection',
+          userActionType: 'addToCollection',
+        });
+
+        trackActionToClickCollectionButton(paper.id, pageType, actionArea || pageType);
+
+        if (!isBlocked) {
+          handleAddToCollection(myCollections, paper.id);
         }
       }}
     >
@@ -85,7 +132,7 @@ const AddToCollectionBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pag
 };
 
 const CollectionButton: React.FC<CollectionButtonProps> = ({
-  paperId,
+  paper,
   pageType,
   paperNote,
   actionArea,
@@ -94,7 +141,9 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
   myCollections,
   currentUser,
   collection,
+  dispatch,
 }) => {
+  const paperId = paper.id;
   const itsMine = collection && collection.createdBy.id === currentUser.id ? true : false;
   const newMemoAnchor = React.useRef<HTMLDivElement | null>(null);
   const [isOpenNotePopover, setIsOpenNotePopover] = React.useState(false);
@@ -167,7 +216,13 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
   }
 
   return (
-    <AddToCollectionBtn paperId={paperId} pageType={pageType} actionArea={actionArea} myCollections={myCollections} />
+    <AddToReadLaterBtn
+      paper={paper}
+      pageType={pageType}
+      actionArea={actionArea}
+      dispatch={dispatch}
+      myCollections={myCollections}
+    />
   );
 };
 

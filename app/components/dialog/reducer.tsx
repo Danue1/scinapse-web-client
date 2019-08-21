@@ -165,6 +165,21 @@ export function reducer(state: DialogState = DIALOG_INITIAL_STATE, action: Actio
       };
     }
 
+    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER: {
+      const targetCollectionId = action.payload.collection.id;
+      const index = state.myCollectionIds.indexOf(targetCollectionId);
+
+      if (index === -1) {
+        return {
+          ...state,
+          myCollectionIds: [targetCollectionId, ...state.myCollectionIds],
+          isLoadingMyCollections: false,
+        };
+      }
+
+      return { ...state };
+    }
+
     case ACTION_TYPES.GLOBAL_DIALOG_SUCCEEDED_POST_COLLECTION: {
       return {
         ...state,

@@ -3,6 +3,7 @@ import { ARTICLE_SEARCH_INITIAL_STATE, ArticleSearchState } from './records';
 import { SearchResult } from '../../api/search';
 import { AddPaperToCollectionParams, RemovePapersFromCollectionParams } from '../../api/collection';
 import { Paper } from '../../model/paper';
+import { SavedInCollections } from '../../model/savedInCollecctions';
 
 export function reducer(
   state: ArticleSearchState = ARTICLE_SEARCH_INITIAL_STATE,
@@ -76,6 +77,35 @@ export function reducer(
     case ACTION_TYPES.ARTICLE_SEARCH_FAILED_TO_GET_REFERENCE_PAPERS:
     case ACTION_TYPES.ARTICLE_SEARCH_FAILED_TO_GET_CITED_PAPERS: {
       return { ...state, isContentLoading: false };
+    }
+
+    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER: {
+      const rawTargetCollection = action.payload.collection;
+      const targetCollection: SavedInCollections = {
+        id: rawTargetCollection.id,
+        title: rawTargetCollection.title,
+        readLater: true,
+      };
+      const targetPaperId = action.payload.paperId;
+
+      const newSearchItemsToShow: Paper[] = state.searchItemsToShow.map(paper => {
+        if (paper.id === targetPaperId) {
+          const newPaper = {
+            ...paper,
+            relation: {
+              savedInCollections:
+                !!paper.relation && paper.relation.savedInCollections.length >= 1
+                  ? [targetCollection, ...paper.relation.savedInCollections]
+                  : [targetCollection],
+            },
+          };
+          return newPaper;
+        } else {
+          return paper;
+        }
+      });
+
+      return { ...state, searchItemsToShow: newSearchItemsToShow };
     }
 
     case ACTION_TYPES.GLOBAL_SUCCEEDED_ADD_PAPER_TO_COLLECTION: {

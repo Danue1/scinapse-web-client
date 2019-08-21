@@ -59,6 +59,15 @@
   }
 }
 
+.deleteReadLaterBtnWrapper {
+  @extend .addCollectionBtnWrapper;
+  background-color: $black1;
+}
+
+.deleteReadLaterBtnContext:after {
+  content: 'Saved';
+}
+
 .removeCollectionBtnWrapper {
   width: 20px;
   height: 20px;
@@ -92,6 +101,10 @@
   content: 'Save to Collection';
 }
 
+.addReadLaterBtnContext:after {
+  content: 'Read Later';
+}
+
 @media (max-width: $mobile_width) {
   .addCollectionBtnWrapper {
     height: 44px;
@@ -107,13 +120,18 @@
     }
   }
 
+  .deleteReadLaterBtnWrapper {
+    background-color: $black1;
+  }
+
   .addCollectionBtnContext:after {
     content: 'Read Later';
   }
 }
 
 @media (max-width: 375px) {
-  .addCollectionBtnContext:after {
+  .addCollectionBtnContext:after,
+  .addReadLaterBtnContext:after {
     content: 'Later';
   }
 }

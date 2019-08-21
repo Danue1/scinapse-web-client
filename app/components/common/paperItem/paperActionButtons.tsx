@@ -103,7 +103,7 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
           {this.getCitationQuoteButton()}
           <CollectionButton
             hasCollection={hasCollection}
-            paperId={paper.id}
+            paper={paper}
             paperNote={paperNote}
             pageType={pageType}
             actionArea={actionArea}

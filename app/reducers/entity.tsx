@@ -8,6 +8,7 @@ import { Member } from '../model/member';
 import { Journal } from '../model/journal';
 import { PaperInCollection } from '../model/paperInCollection';
 import { Profile } from '../model/profile';
+import { SavedInCollections } from '../model/savedInCollecctions';
 
 export interface NormalizedPaperListResponse {
   entities: { papers: { [paperId: number]: Paper } };
@@ -82,6 +83,65 @@ export function reducer(state: EntityState = INITIAL_ENTITY_STATE, action: Actio
       }
 
       return newState;
+    }
+
+    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER: {
+      const rawTargetCollection = action.payload.collection;
+      const targetCollection: SavedInCollections = {
+        id: rawTargetCollection.id,
+        title: rawTargetCollection.title,
+        readLater: true,
+      };
+      const targetPaperId = action.payload.paperId;
+
+      if (state.papers[targetPaperId]) {
+        return {
+          ...state,
+          papers: {
+            ...state.papers,
+            [targetPaperId]: {
+              ...state.papers[targetPaperId],
+              relation: {
+                savedInCollections:
+                  !!state.papers[targetPaperId].relation &&
+                  state.papers[targetPaperId].relation.savedInCollections.length >= 1
+                    ? [targetCollection, ...state.papers[targetPaperId].relation.savedInCollections]
+                    : [targetCollection],
+              },
+            },
+          },
+        };
+      }
+
+      return { ...state };
+    }
+
+    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER: {
+      const removedSavedInCollection = action.payload.collection;
+      const targetPaperId = action.payload.paperId;
+      const savedInCollection = state.papers[targetPaperId].relation.savedInCollections;
+
+      const removedIndex: number = savedInCollection
+        .map(data => {
+          return data.id;
+        })
+        .indexOf(removedSavedInCollection.id);
+
+      return {
+        ...state,
+        papers: {
+          ...state.papers,
+          [targetPaperId]: {
+            ...state.papers[targetPaperId],
+            relation: {
+              savedInCollections: [
+                ...savedInCollection.slice(0, removedIndex),
+                ...savedInCollection.slice(removedIndex + 1, savedInCollection.length),
+              ],
+            },
+          },
+        },
+      };
     }
 
     case ACTION_TYPES.PAPER_SHOW_SUCCEEDED_POST_PAPER_TO_COLLECTION:

@@ -224,6 +224,14 @@ export enum ACTION_TYPES {
 
   RECOMMEND_PAPERS_DIALOG_OPEN_DIALOG = 'RECOMMEND_PAPERS_DIALOG_OPEN_DIALOG',
   RECOMMEND_PAPERS_DIALOG_CLOSE_DIALOG = 'RECOMMEND_PAPERS_DIALOG_CLOSE_DIALOG',
+
+  PAPER_ITEM_START_TO_ADD_PAPER_TO_READ_LATER = 'PAPER_ITEM_START_TO_ADD_PAPER_TO_READ_LATER',
+  PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER = 'PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER',
+  PAPER_ITEM_FAIL_TO_ADD_PAPER_TO_READ_LATER = 'PAPER_ITEM_FAIL_TO_ADD_PAPER_TO_READ_LATER',
+
+  PAPER_ITEM_START_TO_DELETE_PAPER_TO_READ_LATER = 'PAPER_ITEM_START_TO_DELETE_PAPER_TO_READ_LATER',
+  PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER = 'PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER',
+  PAPER_ITEM_FAIL_TO_DELETE_PAPER_TO_READ_LATER = 'PAPER_ITEM_FAIL_TO_DELETE_PAPER_TO_READ_LATER',
 }
 
 export function createAction<T extends { type: ACTION_TYPES }>(d: T): T {
@@ -1050,6 +1058,30 @@ export const ActionCreators = {
 
   fetchLastFullTextRequestedDate(payload: { requestedAt: string | null }) {
     return createAction({ type: ACTION_TYPES.PAPER_SHOW_FETCH_LAST_FULL_TEXT_REQUESTED_DATE, payload });
+  },
+
+  startToAddPaperToReadLater() {
+    return createAction({ type: ACTION_TYPES.PAPER_ITEM_START_TO_ADD_PAPER_TO_READ_LATER });
+  },
+
+  succeedToAddPaperToReadLater(payload: { collection: Collection; paperId: number }) {
+    return createAction({ type: ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER, payload });
+  },
+
+  failToAddPaperTOReadLater() {
+    return createAction({ type: ACTION_TYPES.PAPER_ITEM_FAIL_TO_ADD_PAPER_TO_READ_LATER });
+  },
+
+  startToDeletePaperToReadLater() {
+    return createAction({ type: ACTION_TYPES.PAPER_ITEM_START_TO_DELETE_PAPER_TO_READ_LATER });
+  },
+
+  succeedToDeletePaperToReadLater(payload: { collection: Collection; paperId: number }) {
+    return createAction({ type: ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER, payload });
+  },
+
+  failToDeletePaperTOReadLater() {
+    return createAction({ type: ACTION_TYPES.PAPER_ITEM_FAIL_TO_DELETE_PAPER_TO_READ_LATER });
   },
 
   addEntity(payload: { entities: { [K in keyof AppEntities]?: AppEntities[K] }; result: number | number[] }) {
