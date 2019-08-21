@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { denormalize } from 'normalizr';
 import Popover from '@material-ui/core/Popover';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Popper from '@material-ui/core/Popper';
 import { withStyles } from '../../../helpers/withStylesHelper';
 import GlobalDialogManager from '../../../helpers/globalDialogManager';
 import ActionTicketManager from '../../../helpers/actionTicketManager';
@@ -17,9 +20,6 @@ import {
   AddToCollectionBtnProps,
   RemoveToReadLaterBtnProps,
 } from './types/collectionButton';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Popper from '@material-ui/core/Popper';
-import { Link } from 'react-router-dom';
 import { getUserGroupName } from '../../../helpers/abTestHelper';
 import { READ_LATER_EXPERIMENT } from '../../../constants/abTestGlobalValue';
 const styles = require('./collectionButton.scss');
