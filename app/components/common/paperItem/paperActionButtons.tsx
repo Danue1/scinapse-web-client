@@ -19,6 +19,8 @@ import { addPaperToRecommendation } from '../../../actions/recommendation';
 import { PaperSource } from '../../../api/paper';
 import { AppState } from '../../../reducers';
 import { LayoutState, UserDevice } from '../../layouts/records';
+import { addPaperToReadLater, removePaperToReadLater } from '../../articleSearch/actions';
+import { checkAuthStatus } from '../../auth/actions';
 const styles = require('./paperActionButtons.scss');
 
 interface HandleClickClaim {
@@ -92,6 +94,7 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
 
   public render() {
     const { paper, pageType, paperNote, actionArea, hasCollection, onRemovePaperCollection } = this.props;
+
     return (
       <div className={styles.infoList}>
         <div className={styles.leftBox}>
@@ -107,7 +110,8 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
             paperNote={paperNote}
             pageType={pageType}
             actionArea={actionArea}
-            onRemove={onRemovePaperCollection}
+            onRemove={!!onRemovePaperCollection ? onRemovePaperCollection : this.handleRemovePaperToReadLater}
+            handleAddToreadLater={this.handleAddPaperToReadLater}
           />
         </div>
       </div>
@@ -339,6 +343,48 @@ class PaperActionButtons extends React.PureComponent<PaperActionButtonsProps, Pa
         `https://docs.google.com/forms/d/e/1FAIpQLScS76iC1pNdq94mMlxSGjcp_BuBM4WqlTpfPDt19LgVJ-t7Ng/viewform?usp=pp_url&entry.130188959=${targetId}&entry.1298741478`,
         '_blank'
       );
+    }
+  };
+
+  private handleAddPaperToReadLater = (paperId: number) => {
+    const { dispatch } = this.props;
+    dispatch(addPaperToReadLater(paperId, ''));
+  };
+
+  private handleRemovePaperToReadLater = async (paperIds: number) => {
+    const { dispatch, paper } = this.props;
+    if (!paper.relation || paper.relation.savedInCollections.length === 0) return;
+
+    let targetCollection = null;
+
+    paper.relation.savedInCollections.map(collection => {
+      if (collection.readLater) targetCollection = collection;
+    });
+
+    const auth = await checkAuthStatus()(dispatch);
+    const isLoggedIn = auth && auth.loggedIn;
+
+    if (!isLoggedIn) return window.alert('Your login status has changed. Please refresh the page and try again.');
+
+    let param;
+    if (typeof paperIds === 'object') {
+      param = paperIds;
+    } else {
+      param = [paperIds];
+    }
+
+    let removeConfirm;
+
+    if (param.length >= 2) {
+      removeConfirm = confirm(`Are you sure to remove ${param.length} paper from '${targetCollection.title}'?`);
+    } else {
+      removeConfirm = confirm(`Are you sure to remove this paper from '${targetCollection.title}'?`);
+    }
+
+    if (targetCollection && removeConfirm) {
+      try {
+        await dispatch(removePaperToReadLater({ paperIds: param, collection: targetCollection }));
+      } catch (err) {}
     }
   };
 }

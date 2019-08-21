@@ -119,35 +119,37 @@ export function reducer(state: EntityState = INITIAL_ENTITY_STATE, action: Actio
     case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER: {
       const removedSavedInCollection = action.payload.collection;
       const targetPaperId = action.payload.paperId;
-      const savedInCollection = state.papers[targetPaperId].relation.savedInCollections;
+      if (state.papers[targetPaperId]) {
+        const savedInCollection = state.papers[targetPaperId].relation.savedInCollections;
 
-      const removedIndex: number = savedInCollection
-        .map(data => {
-          return data.id;
-        })
-        .indexOf(removedSavedInCollection.id);
+        const removedIndex: number = savedInCollection
+          .map(data => {
+            return data.id;
+          })
+          .indexOf(removedSavedInCollection.id);
 
-      return {
-        ...state,
-        papers: {
-          ...state.papers,
-          [targetPaperId]: {
-            ...state.papers[targetPaperId],
-            relation: {
-              savedInCollections: [
-                ...savedInCollection.slice(0, removedIndex),
-                ...savedInCollection.slice(removedIndex + 1, savedInCollection.length),
-              ],
+        return {
+          ...state,
+          papers: {
+            ...state.papers,
+            [targetPaperId]: {
+              ...state.papers[targetPaperId],
+              relation: {
+                savedInCollections: [
+                  ...savedInCollection.slice(0, removedIndex),
+                  ...savedInCollection.slice(removedIndex + 1, savedInCollection.length),
+                ],
+              },
             },
           },
-        },
-      };
+        };
+      }
     }
 
     case ACTION_TYPES.PAPER_SHOW_SUCCEEDED_POST_PAPER_TO_COLLECTION:
     case ACTION_TYPES.GLOBAL_FAILED_TO_REMOVE_PAPER_FROM_COLLECTION:
     case ACTION_TYPES.GLOBAL_START_TO_ADD_PAPER_TO_COLLECTION: {
-      const targetCollection = action.payload.collection;
+      const targetCollection = action.payload.collection as Collection;
       const newCollections = {
         ...state.collections,
         [targetCollection.id]: {

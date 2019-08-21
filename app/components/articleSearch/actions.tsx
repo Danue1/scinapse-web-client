@@ -8,7 +8,8 @@ import SearchAPI from '../../api/search';
 import PlutoAxios from '../../api/pluto';
 import { CommonError } from '../../model/error';
 import { GetAuthorsParam } from '../../api/types/author';
-import CollectionAPI from '../../api/collection';
+import CollectionAPI, { RemovePapersFromCollectionParams } from '../../api/collection';
+import { SavedInCollections } from '../../model/savedInCollecctions';
 
 export function changeSearchInput(searchInput: string) {
   return {
@@ -121,6 +122,24 @@ export function addPaperToReadLater(paperId: number, note: string) {
         ActionCreators.succeedToAddPaperToReadLater({
           collection: res.entities.collections[res.result],
           paperId,
+        })
+      );
+    } catch (err) {
+      const error = PlutoAxios.getGlobalError(err);
+      throw error;
+    }
+  };
+}
+
+export function removePaperToReadLater(params: RemovePapersFromCollectionParams) {
+  return async (dispatch: Dispatch<any>) => {
+    try {
+      dispatch(ActionCreators.startToDeletePaperToReadLater());
+      await CollectionAPI.removePapersFromCollection(params);
+      dispatch(
+        ActionCreators.succeedToDeletePaperToReadLater({
+          collection: params.collection as SavedInCollections,
+          paperId: params.paperIds[0],
         })
       );
     } catch (err) {

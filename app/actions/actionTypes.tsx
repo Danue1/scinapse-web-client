@@ -17,6 +17,7 @@ import { FilterObject } from '../helpers/searchQueryManager';
 import { AggregationJournal, AggregationFos } from '../model/aggregation';
 import { AUTHOR_PAPER_LIST_SORT_TYPES } from '../components/common/sortBox';
 import { Member } from '../model/member';
+import { SavedInCollections } from '../model/savedInCollecctions';
 
 export enum ACTION_TYPES {
   GLOBAL_SUCCEEDED_TO_INITIAL_DATA_FETCHING = 'GLOBAL_SUCCEEDED_TO_INITIAL_DATA_FETCHING',
@@ -1076,7 +1077,7 @@ export const ActionCreators = {
     return createAction({ type: ACTION_TYPES.PAPER_ITEM_START_TO_DELETE_PAPER_TO_READ_LATER });
   },
 
-  succeedToDeletePaperToReadLater(payload: { collection: Collection; paperId: number }) {
+  succeedToDeletePaperToReadLater(payload: { collection: SavedInCollections; paperId: number }) {
     return createAction({ type: ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER, payload });
   },
 

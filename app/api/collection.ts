@@ -8,6 +8,7 @@ import { AUTHOR_PAPER_LIST_SORT_TYPES } from '../components/common/sortBox';
 import { DEFAULT_AUTHOR_PAPERS_SIZE } from './author';
 import { NormalizedDataWithPaginationV2, RawPaginationResponseV2 } from './types/common';
 import { camelCaseKeys } from '../helpers/camelCaseKeys';
+import { SavedInCollections } from '../model/savedInCollecctions';
 
 export interface UpdatePaperNoteToCollectionParams {
   paperId: number;
@@ -34,7 +35,7 @@ export interface AddPaperToCollectionParams {
 }
 
 export interface RemovePapersFromCollectionParams {
-  collection: Collection;
+  collection: Collection | SavedInCollections;
   paperIds: number[];
   cancelToken?: CancelToken;
 }

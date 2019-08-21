@@ -7,14 +7,19 @@ import GlobalDialogManager from '../../../helpers/globalDialogManager';
 import ActionTicketManager from '../../../helpers/actionTicketManager';
 import Icon from '../../../icons';
 import { AppState } from '../../../reducers';
-import { CurrentUser } from '../../../model/currentUser';
-import { Collection, collectionSchema } from '../../../model/collection';
+import { collectionSchema } from '../../../model/collection';
 import { MyCollectionsState } from '../../../containers/paperShowCollectionControlButton/reducer';
 import CollectionPaperNote from '../../collectionPaperNote';
 import { blockUnverifiedUser, AUTH_LEVEL } from '../../../helpers/checkAuthDialog';
-import { addPaperToReadLater } from '../../articleSearch/actions';
-import { Dispatch } from 'redux';
-import { Paper } from '../../../model/paper';
+import {
+  CollectionButtonProps,
+  AddToReadLaterBtnProps,
+  AddToCollectionBtnProps,
+  RemoveToReadLaterBtnProps,
+} from './types/collectionButton';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Popper from '@material-ui/core/Popper';
+import { Link } from 'react-router-dom';
 const styles = require('./collectionButton.scss');
 
 function mapStateToProps(state: AppState) {
@@ -23,22 +28,6 @@ function mapStateToProps(state: AppState) {
     myCollections: state.myCollections,
     collection: denormalize(state.collectionShow.mainCollectionId, collectionSchema, state.entities),
   };
-}
-
-interface AddToCollectionBtnProps {
-  paper: Paper;
-  myCollections: MyCollectionsState;
-  pageType: Scinapse.ActionTicket.PageType;
-  actionArea?: Scinapse.ActionTicket.ActionArea;
-  dispatch: Dispatch<any>;
-}
-
-interface CollectionButtonProps extends AddToCollectionBtnProps {
-  hasCollection: boolean;
-  currentUser: CurrentUser;
-  collection: Collection | undefined;
-  paperNote?: string;
-  onRemove?: (paperId: number) => Promise<void>;
 }
 
 function handleAddToCollection(myCollections: MyCollectionsState, paperId: number) {
@@ -63,25 +52,74 @@ function trackActionToClickCollectionButton(
   });
 }
 
-const AddToReadLaterBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pageType, paper, dispatch }) => {
-  let alreadySaved;
-  if (!!paper.relation && paper.relation.savedInCollections.length > 0) {
-    paper.relation.savedInCollections.map(test => {
-      if (test.readLater) {
-        alreadySaved = true;
-      }
-    });
-  }
+const RemoveToReadLaterBtn: React.FC<RemoveToReadLaterBtnProps> = ({
+  paperId,
+  pageType,
+  actionArea,
+  onRemove,
+  collectionId,
+}) => {
+  const dropdownMenuEl = React.useRef(null);
+  const [isOpen, setIsOpen] = React.useState(false);
 
-  if (alreadySaved) {
-    return (
-      <button className={styles.deleteReadLaterBtnWrapper} onClick={async () => {}}>
-        <Icon className={styles.bookmarkIcon} icon="BOOKMARK" />
-        <span className={styles.deleteReadLaterBtnContext} />
-      </button>
-    );
-  }
+  return (
+    <ClickAwayListener
+      onClickAway={() => {
+        setIsOpen(false);
+      }}
+    >
+      <div ref={dropdownMenuEl}>
+        <button className={styles.deleteReadLaterBtnWrapper} onClick={() => setIsOpen(!isOpen)}>
+          <Icon className={styles.bookmarkIcon} icon="BOOKMARK" />
+          <span className={styles.deleteReadLaterBtnContext} />
+        </button>
+        <Popper
+          className={styles.removeFromReadLaterDropdown}
+          modifiers={{
+            preventOverflow: {
+              enabled: false,
+            },
+            flip: {
+              enabled: false,
+            },
+          }}
+          open={isOpen}
+          anchorEl={dropdownMenuEl.current}
+          placement="bottom-end"
+          disablePortal
+        >
+          <div
+            className={styles.menuItem}
+            onClick={() => {
+              setIsOpen(false);
+              if (!!onRemove) {
+                onRemove(paperId);
+              }
+            }}
+          >
+            Remove from Read Later
+          </div>
+          <Link
+            className={styles.menuItem}
+            onClick={() => {
+              setIsOpen(false);
+            }}
+            to={`/collections/${collectionId}`}
+          >
+            Go Read Later
+          </Link>
+        </Popper>
+      </div>
+    </ClickAwayListener>
+  );
+};
 
+const AddToReadLaterBtn: React.FC<AddToReadLaterBtnProps> = ({
+  actionArea,
+  pageType,
+  paperId,
+  handleAddToReadLater,
+}) => {
   return (
     <button
       className={styles.addCollectionBtnWrapper}
@@ -93,10 +131,10 @@ const AddToReadLaterBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, page
           userActionType: 'addToCollection',
         });
 
-        trackActionToClickCollectionButton(paper.id, pageType, actionArea || pageType);
+        trackActionToClickCollectionButton(paperId, pageType, actionArea || pageType);
 
-        if (!isBlocked) {
-          dispatch(addPaperToReadLater(paper.id, ''));
+        if (!isBlocked && handleAddToReadLater) {
+          handleAddToReadLater(paperId);
         }
       }}
     >
@@ -106,7 +144,7 @@ const AddToReadLaterBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, page
   );
 };
 
-const AddToCollectionBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pageType, paper, myCollections }) => {
+const AddToCollectionBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pageType, paperId, myCollections }) => {
   return (
     <button
       className={styles.addCollectionBtnWrapper}
@@ -118,10 +156,10 @@ const AddToCollectionBtn: React.FC<AddToCollectionBtnProps> = ({ actionArea, pag
           userActionType: 'addToCollection',
         });
 
-        trackActionToClickCollectionButton(paper.id, pageType, actionArea || pageType);
+        trackActionToClickCollectionButton(paperId, pageType, actionArea || pageType);
 
         if (!isBlocked) {
-          handleAddToCollection(myCollections, paper.id);
+          handleAddToCollection(myCollections, paperId);
         }
       }}
     >
@@ -138,12 +176,20 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
   actionArea,
   hasCollection,
   onRemove,
+  handleAddToreadLater,
   myCollections,
   currentUser,
   collection,
-  dispatch,
 }) => {
-  const paperId = paper.id;
+  let alreadySaved;
+  if (!!paper.relation && paper.relation.savedInCollections.length > 0) {
+    paper.relation.savedInCollections.map(collection => {
+      if (collection.readLater) {
+        alreadySaved = true;
+      }
+    });
+  }
+
   const itsMine = collection && collection.createdBy.id === currentUser.id ? true : false;
   const newMemoAnchor = React.useRef<HTMLDivElement | null>(null);
   const [isOpenNotePopover, setIsOpenNotePopover] = React.useState(false);
@@ -154,13 +200,13 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
         <button
           className={styles.removeCollectionBtnWrapper}
           onClick={() => {
-            onRemove(paperId);
+            onRemove(paper.id);
             ActionTicketManager.trackTicket({
               pageType,
               actionType: 'fire',
               actionArea: actionArea || pageType,
               actionTag: 'removeFromCollection',
-              actionLabel: String(paperId),
+              actionLabel: String(paper.id),
             });
           }}
         >
@@ -177,7 +223,7 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
                   actionType: 'fire',
                   actionArea: actionArea || pageType,
                   actionTag: 'viewNote',
-                  actionLabel: String(paperId),
+                  actionLabel: String(paper.id),
                 });
               }
             }}
@@ -206,7 +252,7 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
               maxHeight={120}
               note={paperNote}
               collectionId={collection.id}
-              paperId={paperId}
+              paperId={paper.id}
               isMine={!!itsMine}
             />
           </Popover>
@@ -215,13 +261,20 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
     );
   }
 
-  return (
-    <AddToReadLaterBtn
-      paper={paper}
+  return alreadySaved ? (
+    <RemoveToReadLaterBtn
+      paperId={paper.id}
       pageType={pageType}
       actionArea={actionArea}
-      dispatch={dispatch}
-      myCollections={myCollections}
+      collectionId={myCollections.collectionIds[0]}
+      onRemove={onRemove}
+    />
+  ) : (
+    <AddToReadLaterBtn
+      paperId={paper.id}
+      pageType={pageType}
+      actionArea={actionArea}
+      handleAddToReadLater={handleAddToreadLater}
     />
   );
 };

@@ -12,6 +12,7 @@ import CollectionAPI, {
 } from '../../api/collection';
 import { AvailableCitationType } from '../../containers/paperShow/records';
 import PlutoAxios from '../../api/pluto';
+import { Collection } from '../../model/collection';
 
 export interface OpenGlobalDialogParams {
   type: GLOBAL_DIALOG_TYPE;
@@ -74,13 +75,14 @@ export function addPaperToCollection(params: AddPaperToCollectionParams) {
 
 export function removePaperFromCollection(params: RemovePapersFromCollectionParams) {
   return async (dispatch: Dispatch<any>) => {
+    const finalParams = { collection: params.collection as Collection, paperIds: params.paperIds };
     try {
-      dispatch(ActionCreators.startToRemovePaperFromCollection(params));
+      dispatch(ActionCreators.startToRemovePaperFromCollection(finalParams));
 
       await CollectionAPI.removePapersFromCollection(params);
-      dispatch(ActionCreators.succeededToRemovePaperFromCollection(params));
+      dispatch(ActionCreators.succeededToRemovePaperFromCollection(finalParams));
     } catch (err) {
-      dispatch(ActionCreators.failedToRemovePaperFromCollection(params));
+      dispatch(ActionCreators.failedToRemovePaperFromCollection(finalParams));
       const error = PlutoAxios.getGlobalError(err);
       throw error;
     }

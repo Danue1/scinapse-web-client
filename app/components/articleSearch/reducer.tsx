@@ -79,6 +79,39 @@ export function reducer(
       return { ...state, isContentLoading: false };
     }
 
+    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER: {
+      const targetCollection = action.payload.collection;
+      const targetPaperId = action.payload.paperId;
+
+      const newSearchItemsToShow: Paper[] = state.searchItemsToShow.map(paper => {
+        if (paper.id === targetPaperId) {
+          const savedInCollection = paper.relation.savedInCollections;
+
+          const removedIndex: number = savedInCollection
+            .map(data => {
+              return data.id;
+            })
+            .indexOf(targetCollection.id);
+
+          const newPaper = {
+            ...paper,
+            relation: {
+              savedInCollections: [
+                ...savedInCollection.slice(0, removedIndex),
+                ...savedInCollection.slice(removedIndex + 1, savedInCollection.length),
+              ],
+            },
+          };
+
+          return newPaper;
+        } else {
+          return paper;
+        }
+      });
+
+      return { ...state, searchItemsToShow: newSearchItemsToShow };
+    }
+
     case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_ADD_PAPER_TO_READ_LATER: {
       const rawTargetCollection = action.payload.collection;
       const targetCollection: SavedInCollections = {

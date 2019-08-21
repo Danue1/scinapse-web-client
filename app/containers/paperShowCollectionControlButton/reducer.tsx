@@ -168,18 +168,6 @@ export function reducer(state: MyCollectionsState = MY_COLLECTIONS_INITIAL_STATE
       return state;
     }
 
-    case ACTION_TYPES.PAPER_ITEM_SUCCEED_TO_DELETE_PAPER_TO_READ_LATER: {
-      const targetCollectionId = action.payload.collection.id;
-      const index = state.collectionIds.indexOf(targetCollectionId);
-
-      if (index > -1) {
-        const newCollectionIds = [...state.collectionIds.slice(0, index), ...state.collectionIds.slice(index + 1)];
-        return { ...state, collectionIds: newCollectionIds };
-      }
-
-      return state;
-    }
-
     case ACTION_TYPES.AUTH_SUCCEEDED_TO_SIGN_OUT: {
       return MY_COLLECTIONS_INITIAL_STATE;
     }

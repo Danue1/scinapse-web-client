@@ -47,7 +47,7 @@ export function removePaperFromCollection(params: RemovePapersFromCollectionPara
       await CollectionAPI.removePapersFromCollection(params);
       dispatch(
         ActionCreators.succeededToRemovePaperFromCollectionInPaperShow({
-          collection: params.collection,
+          collection: params.collection as Collection,
         })
       );
 

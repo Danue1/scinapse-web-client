@@ -105,6 +105,32 @@
   content: 'Read Later';
 }
 
+.removeFromReadLaterDropdown {
+  z-index: 2;
+  border-radius: 4px;
+  box-shadow: 0 5px 17px 0 rgba(0, 0, 0, 0.15);
+  background-color: white;
+}
+
+.menuItem {
+  display: block;
+  width: 180px;
+  height: 40px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: $black1;
+  padding: 10px;
+  cursor: pointer;
+
+  & + & {
+    border-top: 1px solid $gray200;
+  }
+
+  &:hover {
+    color: $main_blue0;
+  }
+}
+
 @media (max-width: $mobile_width) {
   .addCollectionBtnWrapper {
     height: 44px;
