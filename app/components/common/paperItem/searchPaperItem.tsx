@@ -83,10 +83,10 @@ const PaperItem: React.FC<PaperItemProps> = React.memo(props => {
   return (
     <div className={`${wrapperClassName ? wrapperClassName : styles.paperItemWrapper}`}>
       <div className={styles.contentSection}>
-        {!!relation && relation.savedInCollections.length >= 1 && !isMobile ? (
+        {!!relation && relation.savedInCollections.length >= 1 ? (
           <SavedCollections collections={relation.savedInCollections} />
         ) : null}
-        {!isMobile && historyContent}
+        {historyContent}
         <Title
           paperId={paper.id}
           paperTitle={paper.title}
