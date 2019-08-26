@@ -1,0 +1,117 @@
+.venueAndAuthorWrapper {
+  position: relative;
+}
+
+.middleDot {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 4px;
+}
+
+.ifIconWrapper {
+  svg {
+    width: 10px;
+    height: 10px;
+    color: $gray800;
+    margin-right: 4px;
+  }
+}
+
+.ifAndSCILabel {
+  font-weight: 500;
+}
+
+.authorListWrapper {
+  margin-top: 12px;
+}
+
+.authorItemWrapper {
+  & + & {
+    margin-top: 4px;
+  }
+}
+
+.authorContentWrapper {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: $gray800;
+
+  .leftContent {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .authorName {
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.hIndex {
+  margin-right: 20px;
+}
+
+.test {
+  width: 100%;
+  display: inline-block;
+}
+
+.truncatedAuthorList {
+  @extend %one-line-overflow-ellipsis;
+
+  display: inline-block;
+  width: 90%;
+  font-size: 14px;
+  color: $gray800;
+  margin-top: 2px;
+}
+
+.viewAll {
+  margin-top: 8px;
+  font-size: 14px;
+  color: $gray800;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.expandBtn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.upArrow {
+  display: inline-block;
+  vertical-align: top;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  cursor: pointer;
+
+  svg {
+    display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.downArrow {
+  @extend .upArrow;
+
+  svg {
+    transform: rotate(180deg);
+  }
+}
+
+.journalContent {
+  display: inline-block;
+  width: 90%;
+}
