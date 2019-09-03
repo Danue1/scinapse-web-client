@@ -120,7 +120,6 @@ class PaperShow extends React.PureComponent<PaperShowProps, PaperShowStates> {
 
     if (notRenderedAtServerOrJSAlreadyInitialized) {
       this.fetchPaperShowData();
-      this.scrollToRefCitedSection();
     } else {
       this.logPageView(match.params.paperId, paperShow.errorStatusCode);
     }
@@ -135,7 +134,6 @@ class PaperShow extends React.PureComponent<PaperShowProps, PaperShowStates> {
       dispatch(clearPaperShowState());
       dispatch(getRelatedPapers(parseInt(this.props.match.params.paperId, 10), this.cancelToken));
       this.fetchPaperShowData();
-      this.scrollToRefCitedSection();
       return this.handleScrollEvent();
     }
 
@@ -306,6 +304,7 @@ class PaperShow extends React.PureComponent<PaperShowProps, PaperShowStates> {
       statusCode = error ? error.status : 500;
     }
     this.logPageView(match.params.paperId, statusCode);
+    this.scrollToRefCitedSection();
   };
 
   private logPageView = (paperId: string | number, errorStatus?: number | null) => {
@@ -321,12 +320,12 @@ class PaperShow extends React.PureComponent<PaperShowProps, PaperShowStates> {
   };
 
   private scrollToRefCitedSection = () => {
-    const { paperShow, location } = this.props;
+    const { location } = this.props;
 
-    if (paperShow.citedPaperCurrentPage === 1 && location.hash === '#cited') {
-      this.scrollToSection('cited');
-    } else if (paperShow.referencePaperCurrentPage === 1 && location.hash === '#references') {
-      this.scrollToSection('ref');
+    if (location.hash === '#cited') {
+      this.scrollToSection('cited')();
+    } else if (location.hash === '#references') {
+      this.scrollToSection('ref')();
     } else {
       restoreScroll(location.key);
     }
