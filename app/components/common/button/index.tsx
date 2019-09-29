@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, LinkProps as ReactRouterLinkProps } from 'react-router-dom';
 import classNames from 'classnames/bind';
-import { withStyles } from '../../../helpers/withStylesHelper';
 import ButtonSpinner from './spinner';
 import { ButtonColor, ButtonSize, ButtonVariant } from './types';
+const useStyles = require('isomorphic-style-loader/useStyles');
 const styles = require('./button.scss');
 
 interface BaseButtonProps {
@@ -25,6 +25,7 @@ type AnchorProps = BaseButtonProps &
 export type GeneralButtonProps = LinkProps | ButtonProps | AnchorProps;
 
 const Button: React.FC<GeneralButtonProps> = props => {
+  useStyles(styles);
   const {
     color = 'blue',
     variant = 'contained',
@@ -80,4 +81,4 @@ const Button: React.FC<GeneralButtonProps> = props => {
   }
 };
 
-export default withStyles<typeof Button>(styles)(Button);
+export default Button;
