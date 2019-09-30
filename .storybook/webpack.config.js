@@ -63,11 +63,20 @@ module.exports = async ({ config }) => {
     ],
   });
 
+  config.module.rules.push({
+    test: /\.stories\.tsx?$/,
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
   // remove svg from existing rule
   config.module.rules = config.module.rules.map(rule => {
-    console.log(rule.test);
     if (String(rule.test) === String(/\.(svg|ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|cur|ani|pdf)(\?.*)?$/)) {
-      console.log('gsdkfjjakldfjkasdjklfjasdkljfkljsadklf');
       return {
         ...rule,
         test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|cur|ani|pdf)(\?.*)?$/,
