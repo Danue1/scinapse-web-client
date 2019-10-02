@@ -23,7 +23,8 @@
     "pretty": "prettier --write \"app/**/*.{ts,tsx,scss}\"",
     "precommit": "lint-staged",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "deploy-storybook": "storybook-to-ghpages -o docs"
   },
   "repository": {
     "type": "git",
@@ -57,6 +58,7 @@
     "@storybook/addon-storysource": "^5.2.1",
     "@storybook/addons": "^5.2.1",
     "@storybook/react": "^5.2.1",
+    "@storybook/storybook-deployer": "^2.8.1",
     "@types/autosize": "3.0.6",
     "@types/chrome": "0.0.83",
     "@types/classnames": "2.2.3",
