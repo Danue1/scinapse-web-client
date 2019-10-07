@@ -10,10 +10,9 @@ class StoreManager {
   private _store: EnhancedStore<AppState, AnyAction>;
 
   public get store() {
-    if (this._store) {
-      return this._store;
+    if (!this._store) {
+      this._store = this.initializeStore();
     }
-    this._store = this.initializeStore();
     return this._store;
   }
 
